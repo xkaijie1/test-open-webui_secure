@@ -11,48 +11,12 @@ An effort to remove all critical and high CVE vulnerabilities from open-webui. B
 `ghcr.io/open-webui/open-webui:git-e6ff416-cuda`  
 **Image Release Date:** 4th March 2025
 
-## Overview
-
-open-webui_secure provides a modern, user-friendly web interface with a focus on robust security. We actively maintain and test the following core functionalities:
-
-- **Access Control:** Enforcing strict user permissions.
-- **Admin Login:** Secure administrative authentication.
-- **User Login:** Reliable and secure user authentication.
-- **RAG:** (Retrieval-Augmented Generation) Enhanced data retrieval and augmentation.
-- **Admin Panel:** An intuitive and secure management interface.
-- **Agentic Tools:** Tools for automating administrative tasks safely.
-- **Native Tool Calling:** Direct invocation of native tools in a secure manner.
-
-## Security and Vulnerability Management
-
-To maintain zero critical and high vulnerabilities, we integrate continuous vulnerability scanning with [Trivy](https://aquasecurity.github.io/trivy/).
-
-### Running Vulnerability Scans with Trivy
-
-1. **Install Trivy (Preferred DEB Package):**
-   Download the latest DEB package from the [Trivy GitHub Releases](https://github.com/aquasecurity/trivy/releases):
-   ```bash
-   wget https://github.com/aquasecurity/trivy/releases/download/v0.52.2/trivy_0.52.2_Linux-64bit.deb
-   sudo dpkg -i trivy_0.52.2_Linux-64bit.deb
-   ```
-2. **Commit Your Container Image:**
-   Ensure your container image is tagged (e.g., `open-webui_secure:latest`):
-   ```bash
-   sudo docker commit open-webui_secure open-webui_secure:latest
-   ```
-3. **Run the Trivy Scan: Use the following command to scan your image:**
-   ```bash
-   sudo trivy image --timeout 120m open-webui_secure:latest
-   ```
-4. **Review and Address Findings:** Regularly review the scan report and patch any issues to ensure that no new critical or high vulnerabilities are introduced.
-
-## Getting Started
-### Prerequisites
+## Prerequisites
 - **Docker**
 - **Docker Compose**
 - **Trivy**
 
-### Setup
+## Setup
 1. Installation
    ```bash
    git clone https://github.com/yourusername/open-webui_secure.git
@@ -80,7 +44,7 @@ To maintain zero critical and high vulnerabilities, we integrate continuous vuln
    sudo trivy image --timeout 120m open-webui_secure:latest
    ```
 
-### Core Functionalities Under Active Testing
+## Core Functionalities Under Active Testing
 The following functionalities will be continuously tested and maintained:
 - Access Control
   - Admin Login
@@ -91,7 +55,7 @@ The following functionalities will be continuously tested and maintained:
 
 ## How to Contribute
 
-We welcome contributions to improve both security and functionality. Follow these steps to contribute:
+Contributions to improve the projects are welcomed! Follow these steps to contribute:
 
 1. **Fork the Repository:**  
    Click the "Fork" button on GitHub to create your own copy.

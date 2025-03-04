@@ -2,14 +2,14 @@
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/NotYuSheng/open-webui_secure?color=red)](#)
 
-open-webui_secure is a fork of the original [open-webui](https://github.com/open-webui/open-webui) project. Our mission is to deliver a secure, CVE-free version of open-webui by continuously testing, patching vulnerabilities, and ensuring that no critical or high vulnerabilities are present.
+An effort to remove all critical and high CVE vulnerabilities from open-webui. Based on the popular LLM web interface [open-webui](https://github.com/open-webui/open-webui).
 
 > [!WARNING]
 > This project is still a work in progress.
 
 **Base Image:**  
 `ghcr.io/open-webui/open-webui:git-e6ff416-cuda`  
-**Last Updated:** 4th March 2025
+**Image Release Date:** 4th March 2025
 
 ## Overview
 

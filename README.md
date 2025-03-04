@@ -19,7 +19,7 @@ An effort to remove all critical and high CVE vulnerabilities from the popular L
 ## Setup
 1. Installation
    ```bash
-   git clone https://github.com/yourusername/open-webui_secure.git
+   git clone https://github.com/NotYuSheng/open-webui_secure.git
    cd open-webui_secure
    ```
 2. Deploy the Service

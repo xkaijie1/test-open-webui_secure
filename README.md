@@ -2,7 +2,7 @@
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/NotYuSheng/open-webui_secure?color=red)](#)
 
-An effort to remove all critical and high CVE vulnerabilities from open-webui. Based on the popular LLM web interface [open-webui](https://github.com/open-webui/open-webui).
+An effort to remove all critical and high CVE vulnerabilities from the popular LLM web interface [open-webui](https://github.com/open-webui/open-webui).
 
 > [!WARNING]
 > This project is still a work in progress.

@@ -65,7 +65,7 @@ Contributions to improve the projects are welcomed! Follow these steps to contri
    git checkout -b feature/my-feature
    ```
 3. **Make Your Changes:**  
-   Adhere to our coding and document standards.
+   Any changes should be added to `uninstall-vulnerable-libs.sh`.
 
 4. **Run Security and Functional Tests:**
    - Run a Trivy scan on your changes to ensure no critical or high vulnerabilities are introduced.

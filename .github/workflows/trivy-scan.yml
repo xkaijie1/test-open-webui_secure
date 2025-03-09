@@ -14,7 +14,7 @@ permissions:
 jobs:
   scan:
     permissions:
-      contents: read  # Needed for actions/checkout
+      contents: write  # Required to commit updated README
       security-events: write  # Allows uploading SARIF results to GitHub Security tab
       actions: read  # Required for private repositories
       
@@ -32,12 +32,31 @@ jobs:
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         with:
           image-ref: 'ghcr.io/notyusheng/open-webui_secure:latest'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
+          format: 'json'
+          output: 'trivy-results.json'
           severity: 'CRITICAL,HIGH'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+      - name: Extract scan results
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          CRITICAL=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="CRITICAL")] | length' trivy-results.json)
+          HIGH=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="HIGH")] | length' trivy-results.json)
+          echo "LAST_SCAN=${TIMESTAMP}" >> $GITHUB_ENV
+          echo "CRITICAL_COUNT=${CRITICAL}" >> $GITHUB_ENV
+          echo "HIGH_COUNT=${HIGH}" >> $GITHUB_ENV
+
+      - name: Update README with scan results
+        run: |
+          sed -i '/## Latest Security Scan Results/q' README.md
+          echo "## Latest Security Scan Results" >> README.md
+          echo "**Last Scan:** $LAST_SCAN" >> README.md
+          echo "**Critical Vulnerabilities:** $CRITICAL_COUNT" >> README.md
+          echo "**High Vulnerabilities:** $HIGH_COUNT" >> README.md
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "Update latest Trivy scan results in README"
+          git push

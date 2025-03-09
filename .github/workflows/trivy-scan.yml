@@ -1,17 +1,26 @@
 name: Trivy Security Scan
 
 on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   schedule:
     - cron: '0 0 * * *'  # Runs daily at midnight UTC
-  workflow_dispatch:
 
 permissions:
-  contents: write  # Allows updating README file
+  contents: read
 
 jobs:
   scan:
+    permissions:
+      contents: read  # Needed for actions/checkout
+      security-events: write  # Allows uploading SARIF results to GitHub Security tab
+      actions: read  # Required for private repositories
+      
     name: Trivy Scan
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,28 +29,15 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Run Trivy vulnerability scanner
-        id: trivy_scan
-        continue-on-error: true  # Continue workflow even if vulnerabilities exist
-        run: |
-          trivy image ghcr.io/notyusheng/open-webui_secure:latest \
-            --severity HIGH,CRITICAL \
-            --format table > trivy-results.txt
-          echo "Trivy scan completed with exit code: $?"
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          image-ref: 'ghcr.io/notyusheng/open-webui_secure:latest'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
 
-      - name: Determine CVE Status
-        run: |
-          if [ ${{ steps.trivy_scan.outcome }} == "success" ]; then
-            echo "SCAN_STATUS=✅ No High or Critical CVEs detected as of $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_ENV
-          else
-            echo "SCAN_STATUS=⚠️ Vulnerabilities detected! Review the security tab." >> $GITHUB_ENV
-          fi
-
-      - name: Update README with Scan Status
-        run: |
-          git pull --rebase  # Pull latest changes to avoid conflicts
-          sed -i '/<!-- CVE-STATUS -->/c\<!-- CVE-STATUS -->\n${{ env.SCAN_STATUS }}' README.md
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git commit -m "Update Trivy scan status in README" || echo "No changes to commit"
-          git push
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'

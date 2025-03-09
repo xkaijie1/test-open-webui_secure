@@ -12,18 +12,6 @@ An effort to remove all critical and high CVE vulnerabilities from the popular L
 🚨 **Critical Vulnerabilities:** 0  
 ⚠️ **High Vulnerabilities:** 0  
 
-## 🔍 Latest Security Scan Results
-
-🕒 **Last Scan:** 2025-03-09 08:33:11 UTC  
-🚨 **Critical Vulnerabilities:** 0  
-⚠️ **High Vulnerabilities:** 0  
-
-## Latest Security Scan Results
-
-**Last Scan:** 2025-03-09 08:28:16 UTC  
-**Critical Vulnerabilities:** 0  
-**High Vulnerabilities:** 0  
-
 ## Base Image:
 `ghcr.io/open-webui/open-webui:git-e6ff416-cuda`  
 **Image Release Date:** 4th March 2025

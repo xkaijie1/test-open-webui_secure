@@ -56,23 +56,24 @@ jobs:
 
       - name: Update README with scan results
         run: |
-          # Define the placeholder comment
-          PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS -->"
+          # Define the start and end placeholders
+          START_PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS_START -->"
+          END_PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS_END -->"
 
-          # Generate the new scan results content with emojis
-          SCAN_RESULTS="$PLACEHOLDER\n"
-          SCAN_RESULTS+="## Latest Security Scan Results\n\n"
+          # Generate the new scan results content
+          SCAN_RESULTS="$START_PLACEHOLDER\n"
+          SCAN_RESULTS+="## 🔍 Latest Security Scan Results\n\n"
           SCAN_RESULTS+="🕒 **Last Scan (UTC):** $LAST_SCAN_UTC  \n"
           SCAN_RESULTS+="🕒 **Last Scan (SGT):** $LAST_SCAN_SGT  \n"
           SCAN_RESULTS+="🚨 **Critical Vulnerabilities:** $CRITICAL_COUNT  \n"
-          SCAN_RESULTS+="⚠️ **High Vulnerabilities:** $HIGH_COUNT  \n"
+          SCAN_RESULTS+="⚠️ **High Vulnerabilities:** $HIGH_COUNT  \n\n"
+          SCAN_RESULTS+="$END_PLACEHOLDER\n"
 
-          # Replace only the previous scan results while keeping the rest of the README intact
-          awk -v placeholder="$PLACEHOLDER" -v content="$SCAN_RESULTS" '
-            BEGIN { replaced=0 }
-            $0 == placeholder { print content; replaced=1; next }
-            replaced && /^## / { replaced=0 } # Stop replacing at the next section header
-            !replaced { print }
+          # Use awk to replace everything between the placeholders
+          awk -v start="$START_PLACEHOLDER" -v end="$END_PLACEHOLDER" -v content="$SCAN_RESULTS" '
+            $0 == start { print content; inside=1; next }
+            $0 == end { inside=0; next }
+            !inside { print }
           ' README.md > README.tmp && mv README.tmp README.md
 
       - name: Commit and push changes

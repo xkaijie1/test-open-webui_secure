@@ -5,13 +5,11 @@
 An effort to remove all critical and high CVE vulnerabilities from the popular LLM web interface [open-webui](https://github.com/open-webui/open-webui).
 
 <!-- TRIVY_SCAN_RESULTS -->
+## Latest Security Scan Results
 
-> [!WARNING]
-> The `trivy-scan.yml` runs everyday at midnight UTC (00:00 UTC).
-
-**Base Image:**  
-`ghcr.io/open-webui/open-webui:git-e6ff416-cuda`  
-**Image Release Date:** 4th March 2025
+**Last Scan:** 2025-03-09 08:28:16 UTC  
+**Critical Vulnerabilities:** 0  
+**High Vulnerabilities:** 0  
 
 ## Prerequisites
 - **Docker**

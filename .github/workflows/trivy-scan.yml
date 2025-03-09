@@ -21,21 +21,24 @@ jobs:
 
       - name: Run Trivy vulnerability scanner
         id: trivy_scan
-        continue-on-error: true  # Continue even if vulnerabilities are found
+        continue-on-error: true  # Continue workflow even if vulnerabilities exist
         run: |
           trivy image ghcr.io/notyusheng/open-webui_secure:latest \
             --severity HIGH,CRITICAL \
-            --format table > trivy-results.txt || echo "Vulnerabilities Found" > trivy-status.txt
+            --format table > trivy-results.txt
+          echo "Trivy scan completed with exit code: $?"
 
-          # Determine status based on scan results
-          if grep -q "Vulnerabilities Found" trivy-status.txt; then
-            echo "SCAN_STATUS=⚠️ Vulnerabilities detected! Review the security tab." >> $GITHUB_ENV
-          else
+      - name: Determine CVE Status
+        run: |
+          if [ ${{ steps.trivy_scan.outcome }} == "success" ]; then
             echo "SCAN_STATUS=✅ No High or Critical CVEs detected as of $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_ENV
+          else
+            echo "SCAN_STATUS=⚠️ Vulnerabilities detected! Review the security tab." >> $GITHUB_ENV
           fi
 
       - name: Update README with Scan Status
         run: |
+          git pull --rebase  # Pull latest changes to avoid conflicts
           sed -i '/<!-- CVE-STATUS -->/c\<!-- CVE-STATUS -->\n${{ env.SCAN_STATUS }}' README.md
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"

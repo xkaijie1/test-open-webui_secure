@@ -38,11 +38,11 @@ jobs:
 
       - name: Extract scan results
         run: |
-          # Get timestamps in UTC
-          TIMESTAMP_UTC=$(date -u +"%Y-%m-%d %I:%M:%S %p UTC")
+          # Get timestamps in UTC with Day Month Year format
+          TIMESTAMP_UTC=$(date -u +"%d %b %Y %I:%M:%S %p UTC")
 
-          # Convert to Singapore Time (SGT, UTC+8)
-          TIMESTAMP_SGT=$(TZ=Asia/Singapore date +"%Y-%m-%d %I:%M:%S %p SGT")
+          # Convert to Singapore Time (SGT, UTC+8) in the same format
+          TIMESTAMP_SGT=$(TZ=Asia/Singapore date +"%d %b %Y %I:%M:%S %p SGT")
 
           # Extract vulnerability counts
           CRITICAL=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="CRITICAL")] | length' trivy-results.json)

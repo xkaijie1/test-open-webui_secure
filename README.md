@@ -11,6 +11,10 @@ An effort to remove all critical and high CVE vulnerabilities from the popular L
 **Critical Vulnerabilities:** 0  
 **High Vulnerabilities:** 0  
 
+## Base Image:
+`ghcr.io/open-webui/open-webui:git-e6ff416-cuda`  
+**Image Release Date:** 4th March 2025
+
 ## Prerequisites
 - **Docker**
 - **Docker Compose**

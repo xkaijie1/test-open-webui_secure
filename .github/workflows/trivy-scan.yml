@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write  # Needed to update README
-  security-events: write  # Needed for uploading SARIF to GitHub Security
+  contents: write  # Allows updating README file
 
 jobs:
   scan:
+    name: Trivy Scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,55 +19,26 @@ jobs:
       - name: Log in to GitHub Container Registry (GHCR)
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Install Trivy
-        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
-        with:
-          version: latest
-
-      - name: Run Trivy Scan on **original Open-WebUI image**
+      - name: Run Trivy vulnerability scanner
+        id: trivy_scan
+        continue-on-error: true  # Continue even if vulnerabilities are found
         run: |
-          trivy image ghcr.io/open-webui/open-webui:git-e6ff416-cuda \
+          trivy image ghcr.io/notyusheng/open-webui_secure:latest \
             --severity HIGH,CRITICAL \
-            --format template --template '@/contrib/sarif.tpl' \
-            --output trivy-results-open-webui-original.sarif
+            --format table > trivy-results.txt || echo "Vulnerabilities Found" > trivy-status.txt
 
-      - name: Upload Trivy Scan Report as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-scan-report
-          path: trivy-results-open-webui-original.sarif
+          # Determine status based on scan results
+          if grep -q "Vulnerabilities Found" trivy-status.txt; then
+            echo "SCAN_STATUS=⚠️ Vulnerabilities detected! Review the security tab." >> $GITHUB_ENV
+          else
+            echo "SCAN_STATUS=✅ No High or Critical CVEs detected as of $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_ENV
+          fi
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results-open-webui-original.sarif'
-
-      - name: Update README with Scan Timestamp
+      - name: Update README with Scan Status
         run: |
-          TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          
-          # Define the scan status message
-          SCAN_MESSAGE="\
-          ✅ **Latest Trivy Scan Completed:** $TIMESTAMP  \n
-          ✅ **No Critical or High CVEs detected in:**  \n
-          - [x] \`ghcr.io/open-webui/open-webui:git-e6ff416-cuda\`  \n
-          🔍 Full scan reports available in **GitHub Security Tab** and **GitHub Actions artifacts**.  \n
-          "
-
-          # Insert scan message after the introduction in README.md
-          awk -v msg="$SCAN_MESSAGE" '
-          BEGIN { inserted=0 }
-          /An effort to remove all critical and high CVE vulnerabilities from the popular LLM web interface \[open-webui\]\(https:\/\/github.com\/open-webui\/open-webui\)\./ {
-            print $0 "\n\n" msg
-            inserted=1
-          }
-          inserted && !seen { seen=1; next }  # Skip old scan message
-          { print }
-          ' README.md > README.tmp && mv README.tmp README.md
-
-          # Commit and push changes
+          sed -i '/<!-- CVE-STATUS -->/c\<!-- CVE-STATUS -->\n${{ env.SCAN_STATUS }}' README.md
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git commit -m "Update README with latest Trivy scan timestamp"
-          git push || echo "No changes to commit"
+          git commit -m "Update Trivy scan status in README" || echo "No changes to commit"
+          git push

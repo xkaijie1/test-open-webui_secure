@@ -39,8 +39,8 @@ jobs:
       - name: Extract scan results
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
-          CRITICAL=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="CRITICAL")] | length' trivy-results.json)
-          HIGH=$(jq '[.Results[].Vulnerabilities[] | select(.Severity=="HIGH")] | length' trivy-results.json)
+          CRITICAL=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="CRITICAL")] | length' trivy-results.json)
+          HIGH=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="HIGH")] | length' trivy-results.json)
           echo "LAST_SCAN=${TIMESTAMP}" >> $GITHUB_ENV
           echo "CRITICAL_COUNT=${CRITICAL}" >> $GITHUB_ENV
           echo "HIGH_COUNT=${HIGH}" >> $GITHUB_ENV

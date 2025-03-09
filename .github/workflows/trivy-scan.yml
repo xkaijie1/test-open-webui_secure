@@ -1,42 +1,43 @@
 name: Trivy Security Scan
 
 on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   schedule:
-    - cron: "0 0 * * *"  # Runs daily at midnight UTC
-  workflow_dispatch:
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+
+permissions:
+  contents: read
 
 jobs:
   scan:
-    name: Scan GHCR Image for Vulnerabilities
+    permissions:
+      contents: read  # Needed for actions/checkout
+      security-events: write  # Allows uploading SARIF results to GitHub Security tab
+      actions: read  # Required for private repositories
+      
+    name: Trivy Scan
     runs-on: ubuntu-latest
 
     steps:
-      - name: Log in to GitHub Container Registry
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry (GHCR)
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Install Trivy
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
-          tar -xzf trivy_Linux-64bit.tar.gz
-          sudo mv trivy /usr/local/bin/
-          trivy --version  # Verify installation
-
-      - name: Ensure Report Directory Exists
-        run: mkdir -p reports  # Create directory to store report
-
-      - name: Run Trivy Scan and Save Report
-        run: |
-          trivy image ghcr.io/notyusheng/open-webui_secure:latest \
-            --severity HIGH,CRITICAL \
-            --format table > reports/trivy-report.txt  # Redirect output to file
-          
-          echo "Checking if report was created..."
-          ls -al reports/  # Verify file existence
-
-      - name: Upload Scan Report
-        uses: actions/upload-artifact@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         with:
-          name: trivy-scan-report
-          path: reports/trivy-report.txt
+          image-ref: 'ghcr.io/notyusheng/open-webui_secure:latest'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'

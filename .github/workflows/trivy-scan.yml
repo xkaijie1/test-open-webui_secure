@@ -47,11 +47,23 @@ jobs:
 
       - name: Update README with scan results
         run: |
-          sed -i '/## Latest Security Scan Results/q' README.md
-          echo "## Latest Security Scan Results" >> README.md
-          echo "**Last Scan:** $LAST_SCAN" >> README.md
-          echo "**Critical Vulnerabilities:** $CRITICAL_COUNT" >> README.md
-          echo "**High Vulnerabilities:** $HIGH_COUNT" >> README.md
+          # Define the placeholder comment
+          PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS -->"
+
+          # Generate the new scan results content
+          SCAN_RESULTS="$PLACEHOLDER\n"
+          SCAN_RESULTS+="## Latest Security Scan Results\n\n"
+          SCAN_RESULTS+="**Last Scan:** $LAST_SCAN  \n"
+          SCAN_RESULTS+="**Critical Vulnerabilities:** $CRITICAL_COUNT  \n"
+          SCAN_RESULTS+="**High Vulnerabilities:** $HIGH_COUNT  \n"
+
+          # Replace only the previous scan results while keeping the rest of the README intact
+          awk -v placeholder="$PLACEHOLDER" -v content="$SCAN_RESULTS" '
+            BEGIN { replaced=0 }
+            $0 == placeholder { print content; replaced=1; next }
+            replaced && /^## / { replaced=0 } # Stop replacing at the next section header
+            !replaced { print }
+          ' README.md > README.tmp && mv README.tmp README.md
 
       - name: Commit and push changes
         run: |

@@ -62,19 +62,21 @@ jobs:
 
           # Generate the new scan results content
           SCAN_RESULTS="$START_PLACEHOLDER\n"
-          SCAN_RESULTS+="## Latest Security Scan Results\n\n"
+          SCAN_RESULTS+="## 🔍 Latest Security Scan Results\n\n"
           SCAN_RESULTS+="🕒 **Last Scan (UTC):** $LAST_SCAN_UTC  \n"
           SCAN_RESULTS+="🕒 **Last Scan (SGT):** $LAST_SCAN_SGT  \n"
           SCAN_RESULTS+="🚨 **Critical Vulnerabilities:** $CRITICAL_COUNT  \n"
           SCAN_RESULTS+="⚠️ **High Vulnerabilities:** $HIGH_COUNT  \n\n"
           SCAN_RESULTS+="$END_PLACEHOLDER\n"
 
-          # Preserve everything before, replace in between, and keep everything after the end placeholder
+          # Properly replace content between placeholders while keeping everything else intact
           awk -v start="$START_PLACEHOLDER" -v end="$END_PLACEHOLDER" -v content="$SCAN_RESULTS" '
             BEGIN { inside=0 }
-            $0 == start { print content; inside=1; next }
-            $0 == end { inside=0 }
-            !inside { print }
+            {
+              if ($0 == start) { print content; inside=1; next }
+              if ($0 == end) { inside=0 }
+              if (!inside) { print }
+            }
           ' README.md > README.tmp && mv README.tmp README.md
 
       - name: Commit and push changes

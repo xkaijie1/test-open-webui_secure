@@ -5,6 +5,13 @@
 An effort to remove all critical and high CVE vulnerabilities from the popular LLM web interface [open-webui](https://github.com/open-webui/open-webui).
 
 <!-- TRIVY_SCAN_RESULTS -->
+## Latest Security Scan Results
+
+🕒 **Last Scan (UTC):** 2025-03-09 08:36:50 AM UTC  
+🕒 **Last Scan (SGT):** 2025-03-09 04:36:50 PM SGT  
+🚨 **Critical Vulnerabilities:** 0  
+⚠️ **High Vulnerabilities:** 0  
+
 ## 🔍 Latest Security Scan Results
 
 🕒 **Last Scan:** 2025-03-09 08:33:11 UTC  

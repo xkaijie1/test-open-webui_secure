@@ -6,6 +6,7 @@ An effort to remove all critical and high CVE vulnerabilities from the popular L
 
 <!-- CVE-STATUS -->
 ⚠️ Vulnerabilities detected! Review the security tab.
+⚠️ Vulnerabilities detected! Review the security tab.
 
 > [!WARNING]
 > The `trivy-scan.yml` runs everyday at midnight UTC (00:00 UTC).

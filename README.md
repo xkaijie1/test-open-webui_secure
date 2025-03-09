@@ -4,6 +4,8 @@
 
 An effort to remove all critical and high CVE vulnerabilities from the popular LLM web interface [open-webui](https://github.com/open-webui/open-webui).
 
+<!-- CVE-STATUS -->
+
 > [!WARNING]
 > The `trivy-scan.yml` runs everyday at midnight UTC (00:00 UTC).
 

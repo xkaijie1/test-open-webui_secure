@@ -14,13 +14,26 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Install Trivy
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y wget
+          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
+          tar -xzf trivy_Linux-64bit.tar.gz
+          sudo mv trivy /usr/local/bin/
+          trivy --version  # Verify installation
+
+      - name: Ensure Report Directory Exists
+        run: mkdir -p reports  # Create directory to store report
+
       - name: Run Trivy Scan and Save Report
         run: |
-          mkdir -p reports  # Ensure the directory exists
           trivy image ghcr.io/notyusheng/open-webui_secure:latest \
             --severity HIGH,CRITICAL \
-            --format table \
-            --output reports/trivy-report.txt
+            --format table > reports/trivy-report.txt  # Redirect output to file
+          
+          echo "Checking if report was created..."
+          ls -al reports/  # Verify file existence
 
       - name: Upload Scan Report
         uses: actions/upload-artifact@v4

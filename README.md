@@ -7,6 +7,13 @@ An effort to remove all critical and high CVE vulnerabilities from the popular L
 <!-- TRIVY_SCAN_RESULTS -->
 ## Latest Security Scan Results
 
+🕒 **Last Scan (UTC):** 09 Mar 2025 08:42:25 AM UTC  
+🕒 **Last Scan (SGT):** 09 Mar 2025 04:42:25 PM SGT  
+🚨 **Critical Vulnerabilities:** 0  
+⚠️ **High Vulnerabilities:** 0  
+
+## Latest Security Scan Results
+
 🕒 **Last Scan (UTC):** 09 Mar 2025 08:40:12 AM UTC  
 🕒 **Last Scan (SGT):** 09 Mar 2025 04:40:12 PM SGT  
 🚨 **Critical Vulnerabilities:** 0  

@@ -50,12 +50,12 @@ jobs:
           # Define the placeholder comment
           PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS -->"
 
-          # Generate the new scan results content
+          # Generate the new scan results content with emojis
           SCAN_RESULTS="$PLACEHOLDER\n"
-          SCAN_RESULTS+="## Latest Security Scan Results\n\n"
-          SCAN_RESULTS+="**Last Scan:** $LAST_SCAN  \n"
-          SCAN_RESULTS+="**Critical Vulnerabilities:** $CRITICAL_COUNT  \n"
-          SCAN_RESULTS+="**High Vulnerabilities:** $HIGH_COUNT  \n"
+          SCAN_RESULTS+="## 🔍 Latest Security Scan Results\n\n"
+          SCAN_RESULTS+="🕒 **Last Scan:** $LAST_SCAN  \n"
+          SCAN_RESULTS+="🚨 **Critical Vulnerabilities:** $CRITICAL_COUNT  \n"
+          SCAN_RESULTS+="⚠️ **High Vulnerabilities:** $HIGH_COUNT  \n"
 
           # Replace only the previous scan results while keeping the rest of the README intact
           awk -v placeholder="$PLACEHOLDER" -v content="$SCAN_RESULTS" '

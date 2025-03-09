@@ -56,27 +56,24 @@ jobs:
 
       - name: Update README with scan results
         run: |
-          # Define the start and end placeholders
-          START_PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS_START -->"
-          END_PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS_END -->"
+          # Define the placeholders
+          START_PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS -->"
+          END_PLACEHOLDER="<!-- TRIVY_SCAN_END -->"
 
           # Generate the new scan results content
           SCAN_RESULTS="$START_PLACEHOLDER\n"
-          SCAN_RESULTS+="## 🔍 Latest Security Scan Results\n\n"
+          SCAN_RESULTS+="## Latest Security Scan Results\n\n"
           SCAN_RESULTS+="🕒 **Last Scan (UTC):** $LAST_SCAN_UTC  \n"
           SCAN_RESULTS+="🕒 **Last Scan (SGT):** $LAST_SCAN_SGT  \n"
           SCAN_RESULTS+="🚨 **Critical Vulnerabilities:** $CRITICAL_COUNT  \n"
-          SCAN_RESULTS+="⚠️ **High Vulnerabilities:** $HIGH_COUNT  \n\n"
-          SCAN_RESULTS+="$END_PLACEHOLDER\n"
+          SCAN_RESULTS+="⚠️ **High Vulnerabilities:** $HIGH_COUNT  \n"
+          SCAN_RESULTS+="$END_PLACEHOLDER"
 
-          # Properly replace content between placeholders while keeping everything else intact
-          awk -v start="$START_PLACEHOLDER" -v end="$END_PLACEHOLDER" -v content="$SCAN_RESULTS" '
-            BEGIN { inside=0 }
-            {
-              if ($0 == start) { print content; inside=1; next }
-              if ($0 == end) { inside=0 }
-              if (!inside) { print }
-            }
+          # Use awk to replace only content between the placeholders
+          awk -v start="$START_PLACEHOLDER" -v end="$END_PLACEHOLDER" -v new_content="$SCAN_RESULTS" '
+            $0 == start {print new_content; inside=1; next}
+            $0 == end {inside=0; next}
+            !inside {print}
           ' README.md > README.tmp && mv README.tmp README.md
 
       - name: Commit and push changes

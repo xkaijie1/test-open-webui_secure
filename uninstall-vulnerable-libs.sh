@@ -10,6 +10,7 @@ apt-get remove --purge libxml2
 apt-get remove --purge linux-libc-dev
 apt-get remove --purge --allow-remove-essential perl-base -y
 apt-get remove --purge perl-modules-5.36 
+apt-get remove --purge libfreetype6
 
 # Remove critical CVEs
 apt-get remove --purge libaom3

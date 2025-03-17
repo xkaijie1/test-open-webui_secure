@@ -15,9 +15,9 @@ permissions:
 jobs:
   scan:
     permissions:
-      contents: write  # Required to commit updated README
+      contents: write       # Required to commit updated README
       security-events: write  # Allows uploading SARIF results to GitHub Security tab
-      actions: read  # Required for private repositories
+      actions: read         # Required for private repositories
       
     name: Trivy Scan
     runs-on: ubuntu-latest
@@ -41,14 +41,14 @@ jobs:
         run: |
           # Get timestamps in UTC with Day Month Year format
           TIMESTAMP_UTC=$(date -u +"%d %b %Y %I:%M:%S %p UTC")
-
+  
           # Convert to Singapore Time (SGT, UTC+8) in the same format
           TIMESTAMP_SGT=$(TZ=Asia/Singapore date +"%d %b %Y %I:%M:%S %p SGT")
-
-          # Extract vulnerability counts
-          CRITICAL=$(jq '[.runs[].results? // [] | select(.properties.Severity=="CRITICAL")] | length' trivy-results.sarif)
-          HIGH=$(jq '[.runs[].results? // [] | select(.properties.Severity=="HIGH")] | length' trivy-results.sarif)
-
+  
+          # Extract vulnerability counts using SARIF schema
+          CRITICAL=$(jq '[.runs[].results[]? | select(.properties.Severity=="CRITICAL")] | length' trivy-results.sarif)
+          HIGH=$(jq '[.runs[].results[]? | select(.properties.Severity=="HIGH")] | length' trivy-results.sarif)
+  
           # Store environment variables
           echo "LAST_SCAN_UTC=${TIMESTAMP_UTC}" >> $GITHUB_ENV
           echo "LAST_SCAN_SGT=${TIMESTAMP_SGT}" >> $GITHUB_ENV
@@ -60,7 +60,7 @@ jobs:
           # Define the placeholders
           START_PLACEHOLDER="<!-- TRIVY_SCAN_RESULTS -->"
           END_PLACEHOLDER="<!-- TRIVY_SCAN_END -->"
-
+  
           # Generate the new scan results content
           SCAN_RESULTS="$START_PLACEHOLDER\n"
           SCAN_RESULTS+="## Latest Security Scan Results\n\n"
@@ -69,7 +69,7 @@ jobs:
           SCAN_RESULTS+="🚨 **Critical Vulnerabilities:** $CRITICAL_COUNT  \n"
           SCAN_RESULTS+="⚠️ **High Vulnerabilities:** $HIGH_COUNT  \n"
           SCAN_RESULTS+="$END_PLACEHOLDER"
-
+  
           # Use awk to replace only content between the placeholders
           awk -v start="$START_PLACEHOLDER" -v end="$END_PLACEHOLDER" -v new_content="$SCAN_RESULTS" '
             $0 == start {print new_content; inside=1; next}

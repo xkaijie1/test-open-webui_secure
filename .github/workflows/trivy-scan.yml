@@ -49,23 +49,9 @@ jobs:
           TIMESTAMP_SGT=$(TZ=Asia/Singapore date +"%d %b %Y %I:%M:%S %p SGT")
   
           # Extract vulnerability counts by joining results with rules
-          CRITICAL=$(jq '
-            .runs[] |
-            ($rules := .tool.driver.rules) |
-            (.results // []) |
-            map(
-              select(($rules | map(select(.id == .ruleId))[0].properties.tags // []) | index("CRITICAL"))
-            ) | length
-          ' trivy-results.sarif)
+          CRITICAL=$(jq '[.runs[] | (.tool.driver.rules as $rules | (.results // [])[] | select(($rules | map(select(.id == .ruleId))[0].properties.tags // []) | index("CRITICAL")))] | length' trivy-results.sarif)
   
-          HIGH=$(jq '
-            .runs[] |
-            ($rules := .tool.driver.rules) |
-            (.results // []) |
-            map(
-              select(($rules | map(select(.id == .ruleId))[0].properties.tags // []) | index("HIGH"))
-            ) | length
-          ' trivy-results.sarif)
+          HIGH=$(jq '[.runs[] | (.tool.driver.rules as $rules | (.results // [])[] | select(($rules | map(select(.id == .ruleId))[0].properties.tags // []) | index("HIGH")))] | length' trivy-results.sarif)
   
           # Debug: Print the first vulnerability entry to inspect the structure
           echo "Debug: First vulnerability entry:"

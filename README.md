@@ -25,47 +25,63 @@ This repository runs a trivy scan workflow everytime it is updated and every mid
 - **Trivy**
 
 ## Setup
-1. Installation
+## Setup
+
+1. **Installation**
+
+   Clone the repository and navigate into the project directory:
    ```bash
    git clone https://github.com/NotYuSheng/open-webui_secure.git
    cd open-webui_secure
    ```
-2. Deploy the Service
+2. **Deploy the Service**
+
+    Start the service using docker-compose:
    ```bash
    docker-compose up -d
    ```
-3. Enter the Running Container: Open a shell session inside the container:
+3. **Enter the Running Container**
+
+   Open a shell session inside the container:
    ```bash
    docker exec -it open-webui_secure sh
    ```
-4. **Fix CVEs:**
-   
-   Within the container, apply necessary fixes by uninstalling vulnerable components or making configuration adjustments. Test that the core functionalities are still working as expected.
-5. **Commit Your Changes and Tag the Image for GHCR:**
-   
-   After confirming that everything works correctly, commit your container’s state with a new tag:
+4. **Fix Vulnerabilities**
+
+   Within the container, apply the necessary fixes (for example, by uninstalling or patching vulnerable components).
+
+   Test that core functionalities such as Access Control, Admin Login, User Login, RAG, Admin Panel, Agentic Tools, and Native Tool Calling work as expected.
+
+5. **Commit Your Changes**
+
+   Once everything is verified, commit your container’s state with a new tag (replace `vX.X` with your version number):
    ```bash
    docker commit open-webui_secure open-webui_secure:vX.X
    ```
-   Next, tag your image with the proper GHCR namespace. Replace yourusername with your GitHub username:
-   ```bash
-   docker tag open-webui_secure:vX.X ghcr.io/yourusername/open-webui_secure:vX.X
-   ```
-6. **Push the Image to GitHub Container Registry (GHCR)**
-   Log in to GHCR using your GitHub username and a personal access token (PAT) with the `write:packages` scope:
-   ```bash
-   docker login ghcr.io -u yourusername
-   ```
-   When prompted, enter your PAT. Then, push the tagged image:
-   ```bash
-   docker push ghcr.io/yourusername/open-webui_secure:vX.X
-   ```
-   When prompted, enter your PAT. Then, push the tagged image:
-7. **Run a Trivy Scan:** Finally, scan your committed image for vulnerabilities:
+6. **Scan the Image with Trivy**
+
+   Before pushing your image, run a vulnerability scan to ensure there are no critical or high CVEs:
    ```bash
    sudo trivy image --timeout 120m open-webui_secure:vX.X > trivy-analysis.txt
    ```
-   Verify that there are no more critical or high CVEs reported.
+   Review the `trivy-analysis.txt` file and address any issues found. The process should fail or require fixes if critical vulnerabilities remain.
+
+7. **Tag the Image for GHCR**
+
+   Once your image is secure, tag it with your GitHub Container Registry namespace (replace `yourusername` with your GitHub username):
+   ```bash
+   docker tag open-webui_secure:vX.X ghcr.io/yourusername/open-webui_secure:vX.X
+   ```
+8. **Push the Image to GHCR**
+
+   Log in to GHCR using your GitHub username and a Personal Access Token (PAT) with the write:packages scope:
+   ```bash
+   docker login ghcr.io -u yourusername
+   ```
+   Then push your tagged image:
+   ```bash
+   docker push ghcr.io/yourusername/open-webui_secure:vX.X
+   ```
 
 ## Core Functionalities Under Active Testing
 The following functionalities will be continuously tested and maintained:

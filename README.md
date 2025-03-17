@@ -63,7 +63,7 @@ This repository runs a trivy scan workflow everytime it is updated and every mid
    When prompted, enter your PAT. Then, push the tagged image:
 7. **Run a Trivy Scan:** Finally, scan your committed image for vulnerabilities:
    ```bash
-   sudo trivy image --timeout 120m open-webui_secure:vX.X
+   sudo trivy image --timeout 120m open-webui_secure:vX.X > trivy-analysis.txt
    ```
    Verify that there are no more critical or high CVEs reported.
 

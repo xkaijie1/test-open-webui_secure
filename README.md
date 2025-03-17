@@ -41,16 +41,31 @@ This repository runs a trivy scan workflow everytime it is updated and every mid
 4. **Fix CVEs:**
    
    Within the container, apply necessary fixes by uninstalling vulnerable components or making configuration adjustments. Test that the core functionalities are still working as expected.
-5. **Commit Your Changes:**
+5. **Commit Your Changes and Tag the Image for GHCR:**
    
-   After verifying that all functionalities (Access Control, Admin Login, User Login, RAG, Admin Panel, Agentic Tools, Native Tool Calling) are working correctly, commit your container's state **with a new tag**:
+   After confirming that everything works correctly, commit your container’s state with a new tag:
    ```bash
    docker commit open-webui_secure open-webui_secure:vX.X
    ```
-6. **Run a Trivy Scan:** Finally, scan your committed image for vulnerabilities:
+   Next, tag your image with the proper GHCR namespace. Replace yourusername with your GitHub username:
+   ```bash
+   docker tag open-webui_secure:vX.X ghcr.io/yourusername/open-webui_secure:vX.X
+   ```
+6. **Push the Image to GitHub Container Registry (GHCR)**
+   Log in to GHCR using your GitHub username and a personal access token (PAT) with the `write:packages` scope:
+   ```bash
+   docker login ghcr.io -u yourusername
+   ```
+   When prompted, enter your PAT. Then, push the tagged image:
+   ```bash
+   docker push ghcr.io/yourusername/open-webui_secure:vX.X
+   ```
+   When prompted, enter your PAT. Then, push the tagged image:
+7. **Run a Trivy Scan:** Finally, scan your committed image for vulnerabilities:
    ```bash
    sudo trivy image --timeout 120m open-webui_secure:latest
    ```
+   Verify that there are no more critical or high CVEs reported.
 
 ## Core Functionalities Under Active Testing
 The following functionalities will be continuously tested and maintained:

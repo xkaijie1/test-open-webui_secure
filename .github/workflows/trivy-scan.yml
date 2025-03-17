@@ -34,7 +34,7 @@ jobs:
         with:
           image-ref: 'ghcr.io/notyusheng/open-webui_secure:latest'
           format: 'json'
-          output: 'trivy-results.json'
+          output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
 
       - name: Extract scan results

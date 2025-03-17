@@ -46,8 +46,8 @@ jobs:
           TIMESTAMP_SGT=$(TZ=Asia/Singapore date +"%d %b %Y %I:%M:%S %p SGT")
 
           # Extract vulnerability counts
-          CRITICAL=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="CRITICAL")] | length' trivy-results.sarif)
-          HIGH=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="HIGH")] | length' trivy-results.sarif)
+          CRITICAL=$(jq '[.runs[].results? // [] | select(.properties.Severity=="CRITICAL")] | length' trivy-results.sarif)
+          HIGH=$(jq '[.runs[].results? // [] | select(.properties.Severity=="HIGH")] | length' trivy-results.sarif)
 
           # Store environment variables
           echo "LAST_SCAN_UTC=${TIMESTAMP_UTC}" >> $GITHUB_ENV

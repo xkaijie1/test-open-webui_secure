@@ -33,7 +33,7 @@ jobs:
         uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
         with:
           image-ref: 'ghcr.io/notyusheng/open-webui_secure:latest'
-          format: 'json'
+          format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
 
@@ -46,8 +46,8 @@ jobs:
           TIMESTAMP_SGT=$(TZ=Asia/Singapore date +"%d %b %Y %I:%M:%S %p SGT")
 
           # Extract vulnerability counts
-          CRITICAL=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="CRITICAL")] | length' trivy-results.json)
-          HIGH=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="HIGH")] | length' trivy-results.json)
+          CRITICAL=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="CRITICAL")] | length' trivy-results.sarif)
+          HIGH=$(jq '[.Results[].Vulnerabilities? // [] | .[] | select(.Severity=="HIGH")] | length' trivy-results.sarif)
 
           # Store environment variables
           echo "LAST_SCAN_UTC=${TIMESTAMP_UTC}" >> $GITHUB_ENV

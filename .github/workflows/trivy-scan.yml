@@ -40,7 +40,7 @@ jobs:
       - name: Debug Print SARIF output
         run: cat trivy-results.sarif
 
-      - name: Extract scan results
+      - name: Extract and debug scan results
         run: |
           # Get timestamps in UTC with Day Month Year format
           TIMESTAMP_UTC=$(date -u +"%d %b %Y %I:%M:%S %p UTC")
@@ -56,6 +56,14 @@ jobs:
           # Debug: Print the first vulnerability entry to inspect the structure
           echo "Debug: First vulnerability entry:"
           jq '.runs[].results[0]' trivy-results.sarif
+  
+          # Debug: List all vulnerabilities that are tagged as HIGH (via their corresponding rule)
+          echo "Debug: All HIGH vulnerabilities:"
+          jq '.runs[] | (.tool.driver.rules as $rules | (.results // [])[] | select(($rules | map(select(.id == .ruleId))[0].properties.tags | index("HIGH")))' trivy-results.sarif
+  
+          # Debug: List all rules that have a HIGH tag
+          echo "Debug: Rules with HIGH tag:"
+          jq '.runs[].tool.driver.rules | map(select(.properties.tags | index("HIGH")))' trivy-results.sarif
   
           # Store environment variables
           echo "LAST_SCAN_UTC=${TIMESTAMP_UTC}" >> $GITHUB_ENV

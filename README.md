@@ -9,8 +9,8 @@ This repository runs a trivy scan workflow everytime it is updated and every mid
 <!-- TRIVY_SCAN_RESULTS -->
 ## Latest Security Scan Results
 
-🕒 **Last Scan (UTC):** 17 Mar 2025 01:22:20 AM UTC  
-🕒 **Last Scan (SGT):** 17 Mar 2025 09:22:20 AM SGT  
+🕒 **Last Scan (UTC):** 17 Mar 2025 12:42:27 AM UTC  
+🕒 **Last Scan (SGT):** 17 Mar 2025 08:42:27 AM SGT  
 🚨 **Critical Vulnerabilities:** 0  
 ⚠️ **High Vulnerabilities:** 0  
 <!-- TRIVY_SCAN_END -->
@@ -43,9 +43,9 @@ This repository runs a trivy scan workflow everytime it is updated and every mid
    Within the container, apply necessary fixes by uninstalling vulnerable components or making configuration adjustments. Test that the core functionalities are still working as expected.
 5. **Commit Your Changes:**
    
-   After verifying that all functionalities (Access Control, Admin Login, User Login, RAG, Admin Panel, Agentic Tools, Native Tool Calling) are working correctly, commit your container's state:
+   After verifying that all functionalities (Access Control, Admin Login, User Login, RAG, Admin Panel, Agentic Tools, Native Tool Calling) are working correctly, commit your container's state **with a new tag**:
    ```bash
-   sudo docker commit open-webui_secure open-webui_secure:latest
+   docker commit open-webui_secure open-webui_secure:vX.X
    ```
 6. **Run a Trivy Scan:** Finally, scan your committed image for vulnerabilities:
    ```bash

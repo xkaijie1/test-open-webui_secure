@@ -37,6 +37,9 @@ jobs:
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
 
+      - name: Debug Print SARIF output
+        run: cat trivy-results.sarif
+
       - name: Extract scan results
         run: |
           # Get timestamps in UTC with Day Month Year format

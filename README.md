@@ -68,19 +68,19 @@ This repository runs a trivy scan workflow everytime it is updated and every mid
 
 7. **Tag the Image for GHCR**
 
-   Once your image is secure, tag it with your GitHub Container Registry namespace (replace `yourusername` with your GitHub username):
+   Once your image is secure, tag it with your GitHub Container Registry namespace:
    ```bash
-   docker tag open-webui_secure:vX.X ghcr.io/yourusername/open-webui_secure:vX.X
+   docker tag open-webui_secure:vX.X ghcr.io/notyusheng/open-webui_secure:vX.X
    ```
 8. **Push the Image to GHCR**
 
    Log in to GHCR using your GitHub username and a Personal Access Token (PAT) with the write:packages scope:
    ```bash
-   docker login ghcr.io -u yourusername
+   docker login ghcr.io -u <your-github-username>
    ```
    Then push your tagged image:
    ```bash
-   docker push ghcr.io/yourusername/open-webui_secure:vX.X
+   docker push ghcr.io/notyusheng/open-webui_secure:vX.X
    ```
 
 ## Core Functionalities Under Active Testing

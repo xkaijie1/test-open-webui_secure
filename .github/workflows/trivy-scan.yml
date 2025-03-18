@@ -59,9 +59,9 @@ jobs:
   
           # Debug: List all vulnerabilities that are tagged as HIGH (via their corresponding rule)
           echo "Debug: All HIGH vulnerabilities:"
-          jq '.runs[] | (.tool.driver.rules as $rules | (.results // [])[] | select(($rules | map(select(.id == .ruleId))[0].properties.tags | index("HIGH")))' trivy-results.sarif
+          jq '.runs[] | (.tool.driver.rules as $rules | (.results // [])[] | select(($rules | map(select(.id == .ruleId))[0].properties.tags | index("HIGH"))))' trivy-results.sarif
   
-          # Debug: List all rules that have a HIGH tag
+          # Debug: List all rules that have HIGH tag
           echo "Debug: Rules with HIGH tag:"
           jq '.runs[].tool.driver.rules | map(select(.properties.tags | index("HIGH")))' trivy-results.sarif
   

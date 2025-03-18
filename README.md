@@ -6,15 +6,6 @@ An effort to remove all critical and high CVE vulnerabilities from the popular L
 
 This repository runs a trivy scan workflow everytime it is updated and every midnight UTC. Results of the scan is automatically updated in the [Latest Security Scan Results](#latest-security-scan-results) section.
 
-<!-- TRIVY_SCAN_RESULTS -->
-## Latest Security Scan Results
-
-🕒 **Last Scan (UTC):** 18 Mar 2025 01:06:21 AM UTC  
-🕒 **Last Scan (SGT):** 18 Mar 2025 09:06:21 AM SGT  
-🚨 **Critical Vulnerabilities:** 0  
-⚠️ **High Vulnerabilities:** 0  
-<!-- TRIVY_SCAN_END -->
-
 ## Base Image:
 `ghcr.io/open-webui/open-webui:git-e6ff416-cuda`  
 **Image Release Date:** 4th March 2025
